@@ -5,7 +5,8 @@ git_source(:github) do |repo_name|
 end
 ruby '2.4.1'
 gem 'rails', '~> 5.1.1'
-gem 'sqlite3'
+# gem 'sqlite3'
+gem 'pg'
 gem 'puma', '~> 3.7'
 gem 'sass-rails', '~> 5.0'
 gem 'uglifier', '>= 1.3.0'
@@ -27,6 +28,7 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'bootstrap', '~> 4.0.0.alpha6'
 gem 'high_voltage'
 gem 'jquery-rails'
+gem 'mini_racer'
 group :development do
   gem 'better_errors'
   gem 'rails_layout'
