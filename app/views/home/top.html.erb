@@ -3,11 +3,15 @@
 
 </head>
 <body>
-  <%= form_tag("/home/poker") do %>
-  <%=  text_field_tag :card %>
-  <input type="submit" value="Check" >
-  <%end %>
-
-
+  <h1>
+    <%= form_tag("/home/poker") do %>
+    <%=  text_field_tag :card %>
+    <input type="submit" value="Check" >
+    <%end %>
+  </h1>
+  <h2>
+    <%= @hands.hand %>
+    <%= @error %>
+  </h2>
 
 </body>

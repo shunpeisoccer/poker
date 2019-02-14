@@ -13,6 +13,8 @@ gem 'uglifier', '>= 1.3.0'
 gem 'coffee-rails', '~> 4.2'
 gem 'turbolinks', '~> 5'
 gem 'jbuilder', '~> 2.5'
+gem 'debase'
+gem 'ruby-debug-ide'
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'capybara', '~> 2.13'
@@ -34,10 +36,14 @@ group :development do
   gem 'rails_layout'
   gem 'spring-commands-rspec'
 end
+#group :development, :test do
+ # gem 'factory_girl_rails'
+  #"#{gem 'faker' g}"em 'rspec-rails'
+#end
 group :development, :test do
-  gem 'factory_girl_rails'
-  gem 'faker'
-  gem 'rspec-rails'
+  gem "factory_bot_rails"
+  # or
+  gem "factory_bot"
 end
 group :test do
   gem 'database_cleaner'

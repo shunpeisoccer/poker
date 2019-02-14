@@ -1,18 +1,19 @@
 class HomeController < ApplicationController
-   include CheckModule
+
   def top
+    @hands = Cards.new(nil)
   end
   def poker
     @card = params[:card]
-    tranp = @card.split
-    suits = []
-    numbers = []
-
-    tranp.each do |t|
-      suits.push t[0]
-      numbers.push t[1]
+    @hands = Cards.new(@card)
+    @hands.change
+    if @hands.valid? == true && @hands.uniqueness? == true
+      @hands.check(@hands.numbers,@hands.suits)
+      render("home/top")
+    else
+      @error = "入力値が無効です"
+      render("home/top")
     end
-    
-    @hand = @hand.check(numbers,suits)
+
   end
 end
