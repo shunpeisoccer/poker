@@ -11,7 +11,7 @@ class HomeController < ApplicationController
       @hands.check(@hands.numbers,@hands.suits)
       render("home/top")
     else
-      @error = "入力値が無効です"
+      @hands.error = "入力値が無効です"
       render("home/top")
     end
 

@@ -3,13 +3,13 @@ class Cards
 
   YAKU = ["ハイカード","ワンペア","ツーペア","スリー・オブ・ア・カインド","ストレート","フラッシュ","フルハウス","フォー・オブ・ア・カインド","ストレートフラッシュ"]
 
-  attr_accessor :card , :hand ,:numbers , :suits ,:tranp
+  attr_accessor :card , :hand ,:numbers , :suits ,:tramp ,:error
 
   validates :card, format: /\A[HDSC]([1-9]|[1][0-3])\s[HDSC]([1-9]|[1][0-3])\s[HDSC]([1-9]|[1][0-3])\s[HDSC]([1-9]|[1][0-3])\s[HDSC]([1-9]|[1][0-3])\Z/
   #validates :tranp, unless: :uniqueness?
 
   def uniqueness?
-    self.tranp.uniq.size == 5
+    self.tramp.uniq.size == 5
 
   end
 
@@ -18,22 +18,23 @@ class Cards
     @hand = nil
     @numbers = nil
     @suits = nil
-    @tranp = nil
+    @tramp = nil
+    @error = nil
   end
 
   def change
-    @tranp = self.card.split
+    @tramp = self.card.split
     self.suits = []
     self.numbers = []
 
-    @tranp.each do |t|
+    @tramp.each do |t|
       self.suits.push t[0]
-      self.numbers.push t[1]
+      self.numbers.push t[1|1..2]
     end
   end
 
   def pair(numbers)
-    numbers.group_by { |r| r }.map(&:size).sort.reverse
+    numbers.group_by { |r| r }.map{|key,value|value.size}.sort.reverse
   end
   def straight?(numbers)
     numbers.map!{|n|n.to_i}
