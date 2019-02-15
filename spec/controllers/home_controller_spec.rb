@@ -21,16 +21,16 @@ describe HomeController do
     #end
 
     it "assigns the requessted massage to @card" do
-      params[:card] = "H10 D5 H5 C3 S5"
-      expect(assigns(:card)).to eq params[:card]
+
+      
 
     end
     it "assigns the requessted massage to @hands" do
       @card = "H10 D5 H5 C3 S5"
       @hands = Cards.new(@card)
       @hands.change
-      expect(@hands.numbers).to match_array([10,5,5,3,5])
-      expect(@hands.suits).to match_array([H,D,H,C,S])
+      expect(@hands.numbers).to match_array(["10","5","5","3","5"])
+      expect(@hands.suits).to match_array(["H","D","H","C","S"])
 
     end
     it "valid?1"do
