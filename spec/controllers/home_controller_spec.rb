@@ -2,10 +2,7 @@ require 'rails_helper'
 
 
 describe HomeController do
-  before:each do
-    @card1 = "H10 D5 H5 C3 S5"
-    @card2 = "H10 D5 H10 C3 S5"
-  end
+
 
   describe "GET #top" do
     it "top画面の表示 " do
@@ -22,7 +19,7 @@ describe HomeController do
 
     it "assigns the requessted massage to @card" do
 
-      
+
 
     end
     it "assigns the requessted massage to @hands" do
@@ -34,16 +31,26 @@ describe HomeController do
 
     end
     it "valid?1"do
-       @hands = Cards.new(@card1)
-       @hands.change
-      @hands.valid?
-      expect(@hands.hand).to eq("スリー・オブ・ア・カインド")
+      @card1 = "H10 D5 H5 C3 S5"
+      @hands = Cards.new(@card1)
+      @hands.change
+      if @hands.valid? == true && @hands.uniqueness? == true
+        @hands.check(@hands.numbers,@hands.suits)
+        expect(@hands.hand).to eq("スリー・オブ・ア・カインド")
+      end
     end
-    it "valid?2"do
+
+    it "valid?2" do
+      @card2 = "H10 D5 H10 C3 S5"
       @hands = Cards.new(@card2)
       @hands.change
-      @hands.valid?
-      except(@hands.error).to eq("入力値が無効です")
+      if @hands.valid? == true && @hands.uniqueness? == true
+      else
+        @hands.error = "入力値が無効です"
+        expect(@hands.error).to eq("入力値が無効です")
+      end
+
     end
   end
+
 end
