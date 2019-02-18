@@ -3,7 +3,7 @@ class Cards
 
   YAKU = ["ハイカード","ワンペア","ツーペア","スリー・オブ・ア・カインド","ストレート","フラッシュ","フルハウス","フォー・オブ・ア・カインド","ストレートフラッシュ"]
 
-  attr_accessor :card , :hand ,:numbers , :suits ,:tramp ,:error
+  attr_accessor :card , :hand ,:numbers , :suits ,:tramp ,:error ,:handnumber ,:best
 
   validates :card, format: /\A[HDSC]([1-9]|[1][0-3])\s[HDSC]([1-9]|[1][0-3])\s[HDSC]([1-9]|[1][0-3])\s[HDSC]([1-9]|[1][0-3])\s[HDSC]([1-9]|[1][0-3])\Z/
   #validates :tranp, unless: :uniqueness?
@@ -20,6 +20,8 @@ class Cards
     @suits = nil
     @tramp = nil
     @error = nil
+    @handnumber = nil
+    @best = nil
   end
 
   def change

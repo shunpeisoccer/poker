@@ -15,6 +15,7 @@ gem 'turbolinks', '~> 5'
 gem 'jbuilder', '~> 2.5'
 gem 'debase'
 gem 'ruby-debug-ide'
+gem 'grape'
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'capybara', '~> 2.13'
@@ -42,7 +43,7 @@ end
 #end
 group :development, :test do
   gem 'rspec-rails'
-
+  gem 'rails-controller-testing'
   gem "factory_bot_rails"
   # or
   gem "factory_bot"
