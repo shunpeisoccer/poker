@@ -4,11 +4,11 @@ class HomeController < ApplicationController
     @hands = Cards.new(nil)
   end
   def poker
-    @card = params[:card]
-    @hands = Cards.new(@card)
-    @hands.change
-    if @hands.valid? == true && @hands.uniqueness? == true
-      @hands.check(@hands.numbers,@hands.suits)
+    card = params[:card]
+    @hands = Cards.new(card)
+    @hands.change_card_to_numbers_and_suits
+    if @hands.valid? == true && @hands.unique? == true
+      @hands.check_hand(@hands.numbers,@hands.suits)
       render("home/top")
     else
       @hands.error = "入力値が無効です"

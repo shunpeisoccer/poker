@@ -1,3 +1,0 @@
-json.result @hands do |end|
-  json.(end, :cards, :hand , :best )
-end

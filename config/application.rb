@@ -28,8 +28,13 @@ module RailsBootstrap
     # -- all .rb files in that directory are automatically loaded.
     config.autoload_paths += %W(#{config.root}/lib)  #追加
     config.autoload_paths += Dir["#{config.root}/lib/**/"]  #追加
-    config.paths.add "app/api", glob: "**/*.rb"
-    config.autoload_paths += Dir["#{Rails.root}/app/api/*"]
+    #config.paths.add "app/api", glob: "**/*.rb"
+    #config.autoload_paths += Dir["#{Rails.root}/app/api/*"]
+    config.paths.add File.join('app', 'api'), glob: File.join('**', '*.rb')
+    config.autoload_paths += Dir[Rails.root.join('app', 'api', '*')]
+
+
+
     config.middleware.use(Rack::Config) do |env|
       env['api.tilt.root'] = Rails.root.join 'app', 'views', 'api'
     end
