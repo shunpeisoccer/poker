@@ -14,7 +14,7 @@ module V1
            @hands = Cards.new(card)
            @hands.change_card_to_numbers_and_suits
            if @hands.valid_size == true && @hands.valid_form != true && @hands.valid_unique == true
-                 @hands.check_hand
+                 @hands.judge_hand
                  @hand_number = HAND_NAME.find_index(@hands.hand)
                  all_hand.push(@hand_number)
            else
@@ -25,7 +25,7 @@ module V1
            @hands = Cards.new(card)
            @hands.change_card_to_numbers_and_suits
            if @hands.valid_size == true && @hands.valid_form != true && @hands.valid_unique == true
-             @hands.check_hand
+             @hands.judge_hand
              @hand_number = HAND_NAME.find_index(@hands.hand)
            else
              @hand = nil

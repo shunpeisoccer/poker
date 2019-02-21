@@ -16,7 +16,7 @@ class HomeController < ApplicationController
         if@hands.valid_unique != true
           @hand = nil
         else
-          @hands.check_hand
+          @hands.judge_hand
         end
       end
     end

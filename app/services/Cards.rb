@@ -3,7 +3,7 @@ class Cards
 
   HAND_NAME = ["ハイカード","ワンペア","ツーペア","スリー・オブ・ア・カインド","ストレート","フラッシュ","フルハウス","フォー・オブ・ア・カインド","ストレートフラッシュ"]
 
-  attr_accessor :cards , :hand ,:numbers , :suits ,:cards_set ,:error ,:handnumber ,:best
+  attr_accessor :cards , :hand  ,:error  ,:best ,:numbers ,:suits
 
   def initialize(card)
     @cards = card
@@ -70,7 +70,7 @@ class Cards
   def flush?(suits)
     suits.uniq.size == 1
   end
-  def check_hand
+  def judge_hand
     case pair(@numbers)
     when [2, 1, 1, 1]
       @hand = HAND_NAME[1]
