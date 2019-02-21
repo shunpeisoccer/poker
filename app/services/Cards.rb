@@ -1,31 +1,55 @@
 class Cards
   include ActiveModel::Validations
 
-  Hand_name = ["ハイカード","ワンペア","ツーペア","スリー・オブ・ア・カインド","ストレート","フラッシュ","フルハウス","フォー・オブ・ア・カインド","ストレートフラッシュ"]
+  HAND_NAME = ["ハイカード","ワンペア","ツーペア","スリー・オブ・ア・カインド","ストレート","フラッシュ","フルハウス","フォー・オブ・ア・カインド","ストレートフラッシュ"]
 
-  attr_accessor :card , :hand ,:numbers , :suits ,:cards_set ,:error ,:handnumber ,:best
-
-  validates :card, format: /\A[HDSC]([1-9]|[1][0-3])\s[HDSC]([1-9]|[1][0-3])\s[HDSC]([1-9]|[1][0-3])\s[HDSC]([1-9]|[1][0-3])\s[HDSC]([1-9]|[1][0-3])\Z/
-  #validates :tranp, unless: :uniqueness?
-
-  def unique?
-    self.cards_set.uniq.size == 5
-
-  end
+  attr_accessor :cards , :hand ,:numbers , :suits ,:cards_set ,:error ,:handnumber ,:best
 
   def initialize(card)
-    @card = card
+    @cards = card
     @hand = nil
     @numbers = nil
     @suits = nil
     @cards_set = nil
     @error = nil
-    @handnumber = nil
+    @hand_number = nil
     @best = nil
   end
 
+  def valid_size
+    if @cards_set.size == 5
+      return true
+      else
+        @error = "5つのカード指定文字を半角スペース区切りで入力してください。"
+    end
+  end
+  def valid_form
+     error_num = []
+     @cards_set.each_with_index do |c,i|
+       if c !~ /\A[HDSC]([1-9]|[1][0-3])\Z/
+           error_num.push("#{i+1}番目のカード指定文字が不正です(#{c})")
+       end
+     end
+     if error_num.empty? != true
+       @error = "#{error_num.join}半角英字大文字のスート（S,H,D,C）と数字（1〜13）の組み合わせでカードを指定してください。"
+       return true
+     end
+
+
+  end
+
+  def valid_unique
+    if @cards_set.uniq.size == 5
+      return true
+    else
+      @error = "カードが重複しています。"
+    end
+  end
+
+
+
   def change_card_to_numbers_and_suits
-    @cards_set = @card.split
+    @cards_set = @cards.split
     @suits = []
     @numbers = []
 
@@ -46,32 +70,33 @@ class Cards
   def flush?(suits)
     suits.uniq.size == 1
   end
-  def check_hand(numbers,suits)
-    case pair(numbers)
+  def check_hand
+    case pair(@numbers)
     when [2, 1, 1, 1]
-      @hand = Hand_name[1]
+      @hand = HAND_NAME[1]
     when [2, 2, 1]
-      @hand = Hand_name[2]
+      @hand = HAND_NAME[2]
     when [3, 1, 1]
-      @hand = Hand_name[3]
+      @hand = HAND_NAME[3]
     when [3, 2]
-      @hand = Hand_name[6]
+      @hand = HAND_NAME[6]
     when [4, 1]
-      @hand = Hand_name[7]
+      @hand = HAND_NAME[7]
     else
-      case [straight?(numbers), flush?(suits)]
+      case [straight?(@numbers), flush?(@suits)]
       when [true, false]
-        @hand = Hand_name[4]
+        @hand = HAND_NAME[4]
       when [false, true]
-        @hand = Hand_name[5]
+        @hand = HAND_NAME[5]
       when [true, true]
-        @hand = Hand_name[8]
+        @hand = HAND_NAME[8]
       else
-        @hand = Hand_name[0]
+        @hand = HAND_NAME[0]
       end
       @hand
     end
 
   end
-
 end
+
+

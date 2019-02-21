@@ -7,13 +7,19 @@ class HomeController < ApplicationController
     card = params[:card]
     @hands = Cards.new(card)
     @hands.change_card_to_numbers_and_suits
-    if @hands.valid? == true && @hands.unique? == true
-      @hands.check_hand(@hands.numbers,@hands.suits)
-      render("home/top")
+    if @hands.valid_size != true
+      @hand = nil
     else
-      @hands.error = "入力値が無効です"
-      render("home/top")
+      if @hands.valid_form == true
+        @hand = nil
+      else
+        if@hands.valid_unique != true
+          @hand = nil
+        else
+          @hands.check_hand
+        end
+      end
     end
-
+    render("home/top")
   end
 end
