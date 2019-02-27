@@ -12,6 +12,7 @@ class Cards
     @hand = nil
     @best = nil
     @results = nil
+    @error = nil
   end
   def judge
     change_from_card_to_numbers_and_suits
@@ -39,22 +40,26 @@ class Cards
         judge_hand
         @hand_number = HAND_NAME.find_index(@hand)
         all_hand.push(@hand_number)
+        result_true = {"card"=>@cards,"hand"=>@hand,"best"=>nil}
+        @results.push(result_true)
       else
-        @hand = nil
+        result_false = {"card"=>@cards,"msg"=>@error.gsub(/\n/,"")}
+        @results.push(result_false)
       end
-      result = {"card"=>@cards,"hand"=>@hand,"best"=>nil}
-      @results.push(result)
     end
+     @results.select.each do |hash|
+       if hash["msg"] == nil
+          if HAND_NAME.find_index(hash["hand"]) == all_hand.max
+            hash["best"] = true
+          else
+            hash["best"] = false
+        end
 
-    @results.each do |hash|
-      if HAND_NAME.find_index(hash["hand"]) == all_hand.max
-        hash["best"] = true
-      else
-        hash["best"] = false
       end
-    end
-    @results
+      @results
+     end
   end
+
 
 private
 
@@ -105,7 +110,7 @@ private
   end
 
   def pair(numbers)
-    numbers.group_by { |r| r }.map{|key,value|value.size}.sort.reverse
+    numbers.group_by {|c|c}.map{|k,v|v.size}.sort.reverse
   end
   def straight?(numbers)
     numbers.map!{|n|n.to_i}.sort!
@@ -141,7 +146,8 @@ private
       @hand
     end
   end
-
 end
+
+
 
 
