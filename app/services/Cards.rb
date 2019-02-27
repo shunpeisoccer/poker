@@ -62,7 +62,7 @@ private
     if @cards_set.size == 5
       return true
     else
-      @error = "5つのカード指定文字を半角スペース区切りで入力してください。"
+      @error = '5つのカード指定文字を半角スペース区切りで入力してください。(例："S1 H3 D9 C13 S11"）'
       return false
     end
   end
@@ -70,7 +70,7 @@ private
      error_num = []
      @cards_set.each_with_index do |c,i|
        if c !~ /\A[HDSC]([1-9]|[1][0-3])\Z/
-           error_num.push("#{i+1}番目のカード指定文字が不正です(#{c})")
+           error_num.push("#{i+1}番目のカード指定文字が不正です(#{c})\n")
        end
      end
      if error_num.empty? == true
