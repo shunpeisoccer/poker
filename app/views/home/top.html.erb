@@ -4,14 +4,14 @@
 </head>
 <body>
   <h1>
-    <%= form_tag("/home/poker") do %>
+    <%= form_tag("/home/judge_hand") do %>
     <%=  text_field_tag :card %>
     <input type="submit" value="Check" >
     <%end %>
   </h1>
   <h2>
-    <%= @hands.hand %>
-    <%= @hands.error%>
+    <%= @cards.hand %>
+    <%= @cards.error%>
   </h2>
 
 </body>

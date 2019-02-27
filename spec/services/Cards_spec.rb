@@ -10,12 +10,12 @@ describe Cards do
   context "main method "do
   before do
     card = "H10 D5 H5 C3 S5"
-    @hands = Cards.new(card)
-    @hands.change_card_to_numbers_and_suits
+    @cards = Cards.new(card: card, api_card: nil)
+    @cards.send(:change_from_card_to_numbers_and_suits)
   end
-  it "  def change_card_to_numbers_and_suits" do
-    expect(@hands.numbers).to match_array(["10","5","5","3","5"])
-    expect(@hands.suits).to match_array(["H","D","H","C","S"])
+  it "  def change_from_card_to_numbers_and_suits" do
+    expect(@cards.numbers).to match_array(["10","5","5","3","5"])
+    expect(@cards.suits).to match_array(["H","D","H","C","S"])
   end
 =begin
   it "pair" do
@@ -43,29 +43,37 @@ describe Cards do
   context "valid" do
   it "valid_size" do
     card2 = "H10 D5 C3 S5"
-    @hands = Cards.new(card2)
-    @hands.change_card_to_numbers_and_suits
-    @hands.valid_size
-    expect(@hands.error).to eq("5つのカード指定文字を半角スペース区切りで入力してください。")
+    @cards = Cards.new(card: card2, api_card: nil)
+    @cards.send(:change_from_card_to_numbers_and_suits)
+    @cards.send(:valid_size)
+    expect(@cards.error).to eq("5つのカード指定文字を半角スペース区切りで入力してください。")
   end
 
   it "valid_form"do
     card3 = "H10 D5 H5 C33 S4"
-    @hands = Cards.new(card3)
-    @hands.change_card_to_numbers_and_suits
-    @hands.valid_form
-    expect(@hands.error).to eq("4番目のカード指定文字が不正です(C33)半角英字大文字のスート（S,H,D,C）と数字（1〜13）の組み合わせでカードを指定してください。")
+    @cards = Cards.new(card: card3, api_card: nil)
+    @cards.send(:change_from_card_to_numbers_and_suits)
+    @cards.send(:valid_form)
+    expect(@cards.error).to eq("4番目のカード指定文字が不正です(C33)半角英字大文字のスート（S,H,D,C）と数字（1〜13）の組み合わせでカードを指定してください。")
   end
 
   it "valid_unique" do
     card4 = "H10 D5 C3 H10 S4"
-    @hands = Cards.new(card4)
-    @hands.change_card_to_numbers_and_suits
-    @hands.valid_unique
-    expect(@hands.error).to eq("カードが重複しています。")
+    @cards = Cards.new(card: card4, api_card: nil)
+    @cards.send(:change_from_card_to_numbers_and_suits)
+    @cards.send(:valid_unique)
+    expect(@cards.error).to eq("カードが重複しています。")
 
   end
   end
-
-
+  context "api_judge" do
+    before do
+      cards = ["H1 H13 H12 H11 H10", "H9 C9 S9 H2 C2", "C13 D12 C11 H8 H7"]
+      @cards = Cards.new(card: nil, api_card: cards)
+      @cards.api_judge
+    end
+    it "results" do
+      expect(@cards.results).to match_array([{"card"=>"H1 H13 H12 H11 H10","hand"=>"ストレートフラッシュ","best"=>true},{"card"=>"H9 C9 S9 H2 C2","hand"=>"フルハウス","best"=>false},{"card"=>"C13 D12 C11 H8 H7","hand"=>"ハイカード","best"=>false}])
+    end
+  end
 end

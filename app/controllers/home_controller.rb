@@ -1,25 +1,12 @@
 class HomeController < ApplicationController
 
   def top
-    @hands = Cards.new(nil)
+    @cards = Cards.new(card: nil,api_card: nil)
   end
-  def poker
+  def judge_hand
     card = params[:card]
-    @hands = Cards.new(card)
-    @hands.change_card_to_numbers_and_suits
-    if @hands.valid_size != true
-      @hand = nil
-    else
-      if @hands.valid_form == true
-        @hand = nil
-      else
-        if@hands.valid_unique != true
-          @hand = nil
-        else
-          @hands.judge_hand
-        end
-      end
-    end
+    @cards = Cards.new(card: card,api_card: nil)
+    @cards.judge
     render("home/top")
   end
 end

@@ -3,24 +3,67 @@ class Cards
 
   HAND_NAME = ["ハイカード","ワンペア","ツーペア","スリー・オブ・ア・カインド","ストレート","フラッシュ","フルハウス","フォー・オブ・ア・カインド","ストレートフラッシュ"]
 
-  attr_accessor :cards , :hand  ,:error  ,:best ,:numbers ,:suits
+  attr_accessor :cards , :hand  ,:error  ,:best  ,:api_cards ,:results
+  attr_reader :numbers , :suits
 
-  def initialize(card)
+  def initialize(card:,api_card:)
     @cards = card
+    @api_cards = api_card
     @hand = nil
-    @numbers = nil
-    @suits = nil
-    @cards_set = nil
-    @error = nil
-    @hand_number = nil
     @best = nil
+    @results = nil
   end
+  def judge
+    change_from_card_to_numbers_and_suits
+    if valid_size == false
+      @hand = nil
+    else
+      if valid_form == false
+        @hand = nil
+      else
+        if valid_unique == false
+          @hand = nil
+        else
+          judge_hand
+        end
+      end
+    end
+  end
+  def api_judge
+    all_hand = []
+    @results = []
+    @api_cards.each do |card|
+      @cards = card
+      change_from_card_to_numbers_and_suits
+      if valid_size == true && valid_form == true && valid_unique == true
+        judge_hand
+        @hand_number = HAND_NAME.find_index(@hand)
+        all_hand.push(@hand_number)
+      else
+        @hand = nil
+      end
+      result = {"card"=>@cards,"hand"=>@hand,"best"=>nil}
+      @results.push(result)
+    end
+
+    @results.each do |hash|
+      if HAND_NAME.find_index(hash["hand"]) == all_hand.max
+        hash["best"] = true
+      else
+        hash["best"] = false
+      end
+    end
+    @results
+  end
+
+private
 
   def valid_size
     if @cards_set.size == 5
       return true
-      else
-        @error = "5つのカード指定文字を半角スペース区切りで入力してください。"
+    else
+      @error = "5つのカード指定文字を半角スペース区切りで入力してください。"
+      return false
     end
   end
   def valid_form
@@ -30,11 +73,12 @@ class Cards
            error_num.push("#{i+1}番目のカード指定文字が不正です(#{c})")
        end
      end
-     if error_num.empty? != true
-       @error = "#{error_num.join}半角英字大文字のスート（S,H,D,C）と数字（1〜13）の組み合わせでカードを指定してください。"
+     if error_num.empty? == true
        return true
+     else
+       @error = "#{error_num.join}半角英字大文字のスート（S,H,D,C）と数字（1〜13）の組み合わせでカードを指定してください。"
+       return false
      end
-
 
   end
 
@@ -43,12 +87,13 @@ class Cards
       return true
     else
       @error = "カードが重複しています。"
+      return false
     end
   end
 
 
 
-  def change_card_to_numbers_and_suits
+  def change_from_card_to_numbers_and_suits
     @cards_set = @cards.split
     @suits = []
     @numbers = []
@@ -95,8 +140,8 @@ class Cards
       end
       @hand
     end
-
   end
+
 end
 
 
