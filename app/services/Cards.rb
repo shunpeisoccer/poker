@@ -43,7 +43,7 @@ class Cards
         result_true = {"card"=>@cards,"hand"=>@hand,"best"=>nil}
         @results.push(result_true)
       else
-        result_false = {"card"=>@cards,"msg"=>@error.gsub(/\n|半角英字大文字のスート（S,H,D,C）と数字（1〜13）の組み合わせでカードを指定してください|(例："S1 H3 D9 C13 S11")/,"")}
+        result_false = {"card"=>@cards,"msg"=>@error.gsub(/\n|半角英字大文字のスート（S,H,D,C）と数字（1〜13）の組み合わせでカードを指定してください/,"")}
         @results.push(result_false)
       end
     end

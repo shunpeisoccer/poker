@@ -6,4 +6,3 @@ module V1
     mount V1::Cards_Api
   end
 end
-

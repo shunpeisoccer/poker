@@ -46,7 +46,7 @@ describe Cards do
     @cards = Cards.new(card: card2, api_card: nil)
     @cards.send(:change_from_card_to_numbers_and_suits)
     @cards.send(:valid_size)
-    expect(@cards.error).to eq("5つのカード指定文字を半角スペース区切りで入力してください。")
+    expect(@cards.error).to eq('5つのカード指定文字を半角スペース区切りで入力してください。(例："S1 H3 D9 C13 S11"）')
   end
 
   it "valid_form"do
@@ -54,7 +54,7 @@ describe Cards do
     @cards = Cards.new(card: card3, api_card: nil)
     @cards.send(:change_from_card_to_numbers_and_suits)
     @cards.send(:valid_form)
-    expect(@cards.error).to eq("4番目のカード指定文字が不正です(C33)半角英字大文字のスート（S,H,D,C）と数字（1〜13）の組み合わせでカードを指定してください。")
+    expect(@cards.error).to eq("4番目のカード指定文字が不正です(C33)\n半角英字大文字のスート（S,H,D,C）と数字（1〜13）の組み合わせでカードを指定してください。")
   end
 
   it "valid_unique" do
@@ -63,9 +63,9 @@ describe Cards do
     @cards.send(:change_from_card_to_numbers_and_suits)
     @cards.send(:valid_unique)
     expect(@cards.error).to eq("カードが重複しています。")
+  end
+  end
 
-  end
-  end
   context "api_judge" do
     before do
       cards = ["H1 H13 H12 H11 H10", "H9 C9 S9 H2 C2", "C13 D12 C11 H8 H7"]
