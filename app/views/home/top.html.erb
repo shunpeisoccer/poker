@@ -10,8 +10,12 @@
     <%end %>
   </h1>
   <h2>
-    <%= @cards.hand %>
-    <%= simple_format(@cards.error)%>
+    <% if @cards.hand == nil %>
+      <%= simple_format(@cards.error)%>
+    <% else %>
+      <%= @cards.hand[:name] %>
+    <% end %>
+
   </h2>
 
 </body>

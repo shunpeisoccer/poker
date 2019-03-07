@@ -1,28 +1,46 @@
 class Cards
   include ActiveModel::Validations
+  include Validators
 
-  HAND_NAME = ["ハイカード","ワンペア","ツーペア","スリー・オブ・ア・カインド","ストレート","フラッシュ","フルハウス","フォー・オブ・ア・カインド","ストレートフラッシュ"]
+  HAND_NAME = {HIGH_CARD:
+                   {strength: 1, name: "ハイカード"},
+               ONE_PAIR:
+                   {strength: 2, name: "ワンペア"},
+               TWO_PAIR:
+                   {strength: 3, name: "ツーペア"},
+               THREE_OF_A_KIND:
+                   {strength: 4, name: "スリー・オブ・ア・カインド"},
+               STRAIGHT:
+                   {strength: 5, name: "ストレート"},
+               FLUSH:
+                   {strength: 6, name: "フラッシュ"},
+               FULLHOUSE:
+                   {strength: 7, name: "フルハウス"},
+               FOUR_OF_A_KIND:
+                   {strength: 8, name: "フォー・オブ・ア・カインド"},
+               STRAIGHT_FLUSH:
+                   {strength: 9, name: "ストレートフラッシュ"}
 
-  attr_accessor :cards , :hand  ,:error  ,:best  ,:api_cards ,:results
-  attr_reader :numbers , :suits
+  }
 
-  def initialize(card:,api_card:)
-    @cards = card
-    @api_cards = api_card
-    @hand = nil
-    @best = nil
-    @results = nil
-    @error = nil
+  attr_accessor :card, :api_card, :result
+  attr_reader :error, :numbers, :suits, :all_hand, :hand
+
+  def initialize(card:, api_card:)
+    @card = card
+    @api_card = api_card
   end
+
+
   def judge
     change_from_card_to_numbers_and_suits
-    if valid_size == false
+    if valid_size? == false
       @hand = nil
     else
-      if valid_form == false
+      if valid_form? == false
         @hand = nil
       else
-        if valid_unique == false
+        if valid_unique? == false
           @hand = nil
         else
           judge_hand
@@ -30,124 +48,96 @@ class Cards
       end
     end
   end
+
   def api_judge
-    all_hand = []
-    @results = []
-    @api_cards.each do |card|
-      @cards = card
+    @all_hand = []
+    @result = []
+    @api_card.each do |card|
+      @card = card
       change_from_card_to_numbers_and_suits
-      if valid_size == true && valid_form == true && valid_unique == true
+      if valid_size? == true && valid_form? == true && valid_unique? == true
         judge_hand
-        @hand_number = HAND_NAME.find_index(@hand)
-        all_hand.push(@hand_number)
-        result_true = {"card"=>@cards,"hand"=>@hand,"best"=>nil}
-        @results.push(result_true)
+        @all_hand.push(@hand[:strength])
+        result_true = {"card" => @card, "hand" => @hand[:name], "best" => nil, "strength" => @hand[:strength]}
+        @result.push(result_true)
       else
-        result_false = {"card"=>@cards,"msg"=>@error.gsub(/\n|半角英字大文字のスート（S,H,D,C）と数字（1〜13）の組み合わせでカードを指定してください/,"")}
-        @results.push(result_false)
+        result_false = {"card" => @card, "msg" => @error.gsub(/\n|半角英字大文字のスート（S,H,D,C）と数字（1〜13）の組み合わせでカードを指定してください/, "")}
+        @result.push(result_false)
       end
     end
-     @results.select.each do |hash|
-       if hash["msg"] == nil
-          if HAND_NAME.find_index(hash["hand"]) == all_hand.max
-            hash["best"] = true
-          else
-            hash["best"] = false
-        end
-
-      end
-      @results
-     end
   end
 
-
-private
-
-  def valid_size
-    if @cards_set.size == 5
-      return true
-    else
-      @error = '5つのカード指定文字を半角スペース区切りで入力してください。(例："S1 H3 D9 C13 S11"）'
-      return false
-    end
-  end
-  def valid_form
-     error_num = []
-     @cards_set.each_with_index do |c,i|
-       if c !~ /\A[HDSC]([1-9]|[1][0-3])\Z/
-           error_num.push("#{i+1}番目のカード指定文字が不正です(#{c})\n")
-       end
-     end
-     if error_num.empty? == true
-       return true
-     else
-       @error = "#{error_num.join}半角英字大文字のスート（S,H,D,C）と数字（1〜13）の組み合わせでカードを指定してください。"
-       return false
-     end
-
-  end
-
-  def valid_unique
-    if @cards_set.uniq.size == 5
-      return true
-    else
-      @error = "カードが重複しています。"
-      return false
-    end
-  end
-
-
+  private
 
   def change_from_card_to_numbers_and_suits
-    @cards_set = @cards.split
+    @cards_set = @card.split
     @suits = []
     @numbers = []
 
     @cards_set.each do |t|
       @suits.push t[0]
-      @numbers.push t[1|1..2]
+      @numbers.push t[1 | 1..2]
     end
   end
 
   def pair(numbers)
-    numbers.group_by {|c|c}.map{|k,v|v.size}.sort.reverse
+    @pair = numbers.group_by {|c| c}.map {|k, v| v.size}.sort.reverse
   end
+
+  def one_pair?
+    @pair == [2, 1, 1, 1]
+  end
+
+  def two_pair?
+    @pair == [2, 2, 1]
+  end
+
+  def three_of_a_kind?
+    @pair == [3, 1, 1]
+  end
+
+  def four_of_a_kind?
+    @pair == [4, 1]
+  end
+
+  def fullhouse?
+    @pair == [3, 2]
+  end
+
   def straight?(numbers)
-    numbers.map!{|n|n.to_i}.sort!
-    numbers_pull = numbers.map { |r| r - numbers[0] }
+    numbers.map! {|n| n.to_i}.sort!
+    numbers_pull = numbers.map {|r| r - numbers[0]}
     numbers_pull == [0, 1, 2, 3, 4] || numbers_pull == [0, 9, 10, 11, 12]
   end
+
   def flush?(suits)
     suits.uniq.size == 1
   end
+
   def judge_hand
-    case pair(@numbers)
-    when [2, 1, 1, 1]
-      @hand = HAND_NAME[1]
-    when [2, 2, 1]
-      @hand = HAND_NAME[2]
-    when [3, 1, 1]
-      @hand = HAND_NAME[3]
-    when [3, 2]
-      @hand = HAND_NAME[6]
-    when [4, 1]
-      @hand = HAND_NAME[7]
+    pair(@numbers)
+    if one_pair?
+      @hand = HAND_NAME[:ONE_PAIR]
+    elsif two_pair?
+      @hand = HAND_NAME[:TWO_PAIR]
+    elsif three_of_a_kind?
+      @hand = HAND_NAME[:THREE_OF_A_KIND]
+    elsif fullhouse?
+      @hand = HAND_NAME[:FULLHOUSE]
+    elsif four_of_a_kind?
+      @hand = HAND_NAME[:FOUR_OF_A_KIND]
     else
       case [straight?(@numbers), flush?(@suits)]
       when [true, false]
-        @hand = HAND_NAME[4]
+        @hand = HAND_NAME[:STRAIGHT]
       when [false, true]
-        @hand = HAND_NAME[5]
+        @hand = HAND_NAME[:FLUSH]
       when [true, true]
-        @hand = HAND_NAME[8]
+        @hand = HAND_NAME[:STRAIGHT_FLUSH]
       else
-        @hand = HAND_NAME[0]
+        @hand = HAND_NAME[:HIGH_CARD]
       end
       @hand
     end
   end
 end
-
-
-
-
