@@ -1,12 +1,12 @@
 module V1
   class Cards_Api < Grape::API
-
-    resource "card"  do
+    format :json
+    resource "card" do
       params do
-        requires :cards , type: Array
+        requires :cards, type: Array
       end
-      post"/judge"  do
-        @cards = Cards.new(card: nil , api_card: params[:cards])
+      post "/judge" do
+        @cards = Cards.new(card: nil, api_card: params[:cards])
         @cards.api_judge
         @cards.result.each do |hash|
           if hash["msg"] == nil
@@ -19,8 +19,9 @@ module V1
             end
           end
         end
-        return {"result" => @cards.result}
-        end
+        results =  {"result" => @cards.result}
+        return results
       end
+    end
   end
 end

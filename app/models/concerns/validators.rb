@@ -24,8 +24,8 @@ module Validators
     if error_num.empty? == true
       return true
     else
-      @error = "#{error_num.join}"+ERROR[:form_error]
-          return false
+      @error = "#{error_num.join}" + ERROR[:form_error]
+      return false
     end
 
   end

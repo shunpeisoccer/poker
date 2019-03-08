@@ -8,7 +8,6 @@ describe HomeController, type: :controller do
     let(:cards) {Cards.new}
     it "top画面の表示 " do
       get :top
-      #expect(assigns(:hands)).to eq nil
       expect(response.status).to eq 200
     end
     it 'assigns the requested card to @card' do
@@ -26,9 +25,23 @@ describe HomeController, type: :controller do
       @cards = Cards.new(card: nil, api_card: nil)
       @params = "H1 H2 H3 H4 H5"
     end
-    it "returns a 200 request" do
-      post :judge_hand, params: {card: "H1 H2 H3 H4 H5" }
-      expect(response).to have_http_status "200"
+    context "リクエスト正常系" do
+      it "returns a 302 request" do
+        post :judge_hand, params: {card: "H1 H2 H3 H4 H5"}
+        expect(response.status).to eq 302
+      end
+    end
+    context "リクエスト異常系" do
+      it "returns a 400 request" do
+        post :judge_hand, params: {card: "H1 H1 H2 H3 H3"}
+        expect(response.status).to eq 400
+      end
+    end
+    context "#new" do
+      it "Cards.new" do
+        @cards = Cards.new(card: "H1 D1 H3 H7 H5", api_card: nil)
+        expect(@cards.card).to eq("H1 D1 H3 H7 H5")
+      end
     end
     context "正常系" do
       it "judge" do
@@ -42,21 +55,21 @@ describe HomeController, type: :controller do
       context "ユーザが不正なデータを登録してきた場合" do
         context "重複したデータを登録してきた場合" do
           it "valid_unique" do
-            @cards.card ="H1 H1 D3 D4 H5"
+            @cards.card = "H1 H1 D3 D4 H5"
             @cards.judge
             expect(@cards.error).to eq("カードが重複しています。")
           end
         end
         context "５つのカードを登録していない場合" do
           it "valid_size" do
-            @cards.card ="H1 H2 D3 D4 "
+            @cards.card = "H1 H2 D3 D4 "
             @cards.judge
             expect(@cards.error).to eq('5つのカード指定文字を半角スペース区切りで入力してください。(例："S1 H3 D9 C13 S11")')
           end
         end
         context "不正文字が含まれている場合" do
           it "valid_form" do
-            @cards.card ="H1 H2 D3 D42 H5"
+            @cards.card = "H1 H2 D3 D42 H5"
             @cards.judge
             expect(@cards.error).to eq("4番目のカード指定文字が不正です(D42)\n半角英字大文字のスート（S,H,D,C）と数字（1〜13）の組み合わせでカードを指定してください。")
           end

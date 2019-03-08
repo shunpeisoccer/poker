@@ -9,13 +9,6 @@
     <input type="submit" value="Check" >
     <%end %>
   </h1>
-  <h2>
-    <% if @cards.hand == nil %>
-      <%= simple_format(@cards.error)%>
-    <% else %>
-      <%= @cards.hand[:name] %>
-    <% end %>
 
-  </h2>
 
 </body>

@@ -108,38 +108,12 @@ describe Cards do
 
   describe "#new" do
     it "Cards.new" do
-      @cards = Cards.new(card:"H1 D1 H3 H7 H5",api_card: nil)
+      @cards = Cards.new(card: "H1 D1 H3 H7 H5", api_card: nil)
       expect(@cards.card).to eq("H1 D1 H3 H7 H5")
     end
   end
 
-  describe "#valid?" do
-    context "valid" do
-      it "valid_size?" do
-        card2 = "H10 D5 C3 S5"
-        @cards = Cards.new(card: card2, api_card: nil)
-        @cards.send(:change_from_card_to_numbers_and_suits)
-        @cards.send(:valid_size?)
-        expect(@cards.error).to eq('5つのカード指定文字を半角スペース区切りで入力してください。(例："S1 H3 D9 C13 S11")')
-      end
 
-      it "valid_form?" do
-        card3 = "H10 D5 H5 C33 S4"
-        @cards = Cards.new(card: card3, api_card: nil)
-        @cards.send(:change_from_card_to_numbers_and_suits)
-        @cards.send(:valid_form?)
-        expect(@cards.error).to eq("4番目のカード指定文字が不正です(C33)\n半角英字大文字のスート（S,H,D,C）と数字（1〜13）の組み合わせでカードを指定してください。")
-      end
-
-      it "valid_unique?" do
-        card4 = "H10 D5 C3 H10 S4"
-        @cards = Cards.new(card: card4, api_card: nil)
-        @cards.send(:change_from_card_to_numbers_and_suits)
-        @cards.send(:valid_unique?)
-        expect(@cards.error).to eq("カードが重複しています。")
-      end
-    end
-  end
   describe "#api_judge" do
     before do
       @cards = Cards.new(card: nil, api_card: nil)
@@ -155,17 +129,17 @@ describe Cards do
       it "valid_size" do
         @cards.api_card = ["H1 H13 H12 H11 H10", "H9 C9 S9 H2 "]
         @cards.api_judge
-        expect(@cards.result).to match_array([{"card" => "H1 H13 H12 H11 H10", "hand" => "ストレートフラッシュ", "best" => nil, "strength" => 9}, {"card" => "H9 C9 S9 H2 ", "msg" =>"5つのカード指定文字を半角スペース区切りで入力してください。(例：\"S1 H3 D9 C13 S11\")"}, ])
+        expect(@cards.result).to match_array([{"card" => "H1 H13 H12 H11 H10", "hand" => "ストレートフラッシュ", "best" => nil, "strength" => 9}, {"card" => "H9 C9 S9 H2 ", "msg" => "5つのカード指定文字を半角スペース区切りで入力してください。(例：\"S1 H3 D9 C13 S11\")"},])
       end
       it "valid_form" do
         @cards.api_card = ["H1 H13 H12 H11 H10", "H9 C9 S9 H2 H67 "]
         @cards.api_judge
-        expect(@cards.result).to match_array([{"card" => "H1 H13 H12 H11 H10", "hand" => "ストレートフラッシュ", "best" => nil, "strength" => 9}, {"card" => "H9 C9 S9 H2 H67 ", "msg" =>"5番目のカード指定文字が不正です(H67)。"}, ])
+        expect(@cards.result).to match_array([{"card" => "H1 H13 H12 H11 H10", "hand" => "ストレートフラッシュ", "best" => nil, "strength" => 9}, {"card" => "H9 C9 S9 H2 H67 ", "msg" => "5番目のカード指定文字が不正です(H67)。"},])
       end
       it "valid_unique" do
         @cards.api_card = ["H1 H13 H12 H11 H10", "H9 C9 S9 H2 H9 "]
         @cards.api_judge
-        expect(@cards.result).to match_array([{"card" => "H1 H13 H12 H11 H10", "hand" => "ストレートフラッシュ", "best" => nil, "strength" => 9}, {"card" => "H9 C9 S9 H2 H9 ", "msg" =>"カードが重複しています。"}, ])
+        expect(@cards.result).to match_array([{"card" => "H1 H13 H12 H11 H10", "hand" => "ストレートフラッシュ", "best" => nil, "strength" => 9}, {"card" => "H9 C9 S9 H2 H9 ", "msg" => "カードが重複しています。"},])
       end
     end
   end
